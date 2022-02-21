@@ -30,7 +30,9 @@ module "user_data" {
   ContactInfo email@example.com
   EOT
 }
-```## Requirements
+```
+
+## Requirements
 
 | Name | Version |
 |------|---------|
