@@ -1,0 +1,37 @@
+#cloud-config
+apt:
+  conf: | # APT config
+    APT {
+      Get {
+        Assume-Yes "true";
+        Fix-Broken "true";
+      };
+    };
+  preserve_sources_list: true
+  sources:
+    torproject.list:
+      source: |
+        deb     https://deb.torproject.org/torproject.org $RELEASE main
+        deb-src https://deb.torproject.org/torproject.org $RELEASE main
+      key: ${tor_apt_key}
+
+packages: ${packages}
+package_upgrade: true
+
+runcmd:
+  - echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections
+  - apt install unattended-upgrades
+  - dpkg-reconfigure unattended-upgrades  # sometimes it is already installed
+  - sysctl -p /etc/sysctl.d/50-tcp_bbr.conf
+
+write_files:
+  - content: ${torrc}
+    path: /etc/tor/torrc
+    owner: root:root
+    permissions: '0644'
+  - content: |
+      net.core.default_qdisc=fq
+      net.ipv4.tcp_congestion_control=bbr
+    path: /etc/sysctl.d/50-tcp_bbr.conf
+    owner: root:root
+    permissions: '0644'
