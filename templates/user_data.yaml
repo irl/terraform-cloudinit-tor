@@ -1,4 +1,8 @@
 #cloud-config
+bootcmd:
+  - DEBIAN_FRONTEND=noninteractive apt-get -yq update
+  - DEBIAN_FRONTEND=noninteractive apt-get -yq install gnupg
+
 apt:
   conf: | # APT config
     APT {
@@ -21,7 +25,7 @@ package_upgrade: true
 runcmd:
   - echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections
   - DEBIAN_FRONTEND=noninteractive apt install unattended-upgrades
-  - dpkg-reconfigure unattended-upgrades  # sometimes it is already installed
+  - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure unattended-upgrades  # sometimes it is already installed
   - sysctl -p /etc/sysctl.d/50-tcp_bbr.conf
 
 write_files:
