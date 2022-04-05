@@ -20,7 +20,7 @@ package_upgrade: true
 
 runcmd:
   - echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections
-  - apt install unattended-upgrades
+  - DEBIAN_FRONTEND=noninteractive apt install unattended-upgrades
   - dpkg-reconfigure unattended-upgrades  # sometimes it is already installed
   - sysctl -p /etc/sysctl.d/50-tcp_bbr.conf
 
