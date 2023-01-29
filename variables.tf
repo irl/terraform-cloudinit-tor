@@ -1,28 +1,28 @@
 variable "additional_packages" {
-  default = []
+  default     = []
   description = "A list of additional packages to be installed using apt."
-  type = list(string)
+  type        = list(string)
 }
 
 variable "gzip" {
-  default = true
+  default     = true
   description = "Compress the final user-data with gzip."
-  type = bool
+  type        = bool
 }
 
 variable "install_obfs4proxy" {
-  default = true
+  default     = false
   description = "Install the obfs4proxy package using apt."
-  type = bool
+  type        = bool
 }
 
 variable "install_nyx" {
-  default = true
+  default     = false
   description = "Install the nyx package using apt."
-  type = bool
+  type        = bool
 }
 
 variable "torrc" {
   description = "The torrc configuration file to be installed."
-  type = string
+  type        = string
 }

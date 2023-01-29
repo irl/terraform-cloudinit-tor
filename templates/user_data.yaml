@@ -39,3 +39,11 @@ write_files:
     path: /etc/sysctl.d/50-tcp_bbr.conf
     owner: root:root
     permissions: '0644'
+  - content: |
+      Explanation: get obfs4proxy from stable-backports
+      Package: obfs4proxy
+      Pin: release a=bullseye-backports
+      Pin-Priority: 500
+    path: /etc/apt/preferences.d/obfs4proxy.pref
+    owner: root:root
+    permissions: '0644'

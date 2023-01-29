@@ -1,0 +1,49 @@
+name: terraform-cloudinit-tor
+license: "BSD2"
+gitlab_repo: sr2c/terraform-cloudinit-tor
+related:
+- name: "terraform-null-torrc"
+  description: "Terraform module used in this module to create the torrc configuration file."
+  url: "https://gitlab.com/sr2c/terraform-null-torrc/"
+- name: "terraform-null-contactinfo"
+  description: "Terraform module that can be used to create a Tor ContactInfo-Information-Sharing-Speicifcation compliant contact info string."
+  url: "https://gitlab.com/sr2c/terraform-null-contactinfo/"
+description: |-
+  Generates cloud-init user data for a Tor server (relay or bridge) using the latest stable Debian release. It
+  *may* also work with Debian derivatives but has not been tested with anything other than Debian. You may want to
+  check out the [sr2c/torrc](https://registry.terraform.io/modules/sr2c/torrc/) and
+  [sr2c/contactinfo](https://registry.terraform.io/modules/sr2c/contactinfo) modules for generating
+  torrc configuration files and
+  [ContactInfo Information Sharing Specification](https://nusenu.github.io/ContactInfo-Information-Sharing-Specification/)
+  lines respectively.
+  
+  The tor package will be installed from the official Tor Project Debian repository at deb.torproject.org. The signing
+  key for the repository is included in this module.
+  
+  The `obfs4proxy` and `nyx` packages can be installed by setting the respective inputs. For obfs4proxy, an apt
+  preference file is installed to always enable the use of stable backports. This will only work on Debian and on
+  other derivatives (e.g. Ubuntu) an older version of obfs4proxy would be installed from the available repositories.
+  Additional packages may also be installed using the `additional_packages` input.
+  
+  The configuration will also change the default congestion control algorithm to BBR as it has been observed to perform
+  better in many of the scenarios where Tor is used. If this is really a problem then please submit an issue and it
+  could be made optional.
+usage: |-
+  ```
+  module "user_data" {
+    source = "sr2c/tor/cloudinit"
+    # TODO: version = "x.x.x"
+    torrc  = <<-EOT
+    Nickname    TerraformRelay
+    ORPort      9001
+    ContactInfo email@example.com
+    EOT
+  }
+  ```
+include:
+- "docs/targets.md"
+- "docs/terraform.md"
+contributors:
+- name: "irl"
+  gitlab: "irlxyz"
+  gitlab_id: 5895869
