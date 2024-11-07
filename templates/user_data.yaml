@@ -4,7 +4,7 @@ bootcmd:
   - DEBIAN_FRONTEND=noninteractive apt-get -yq install gnupg
 
 apt:
-  conf: | # APT config
+  conf: |
     APT {
       Get {
         Assume-Yes "true";
@@ -18,15 +18,25 @@ apt:
         deb     https://deb.torproject.org/torproject.org $RELEASE main
         deb-src https://deb.torproject.org/torproject.org $RELEASE main
       key: ${tor_apt_key}
+    debian-backports.list:
+      source: |
+        deb http://deb.debian.org/debian $RELEASE-backports main
 
 packages: ${packages}
+package_update: true
 package_upgrade: true
 
 runcmd:
   - echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections
-  - DEBIAN_FRONTEND=noninteractive apt install unattended-upgrades
-  - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure unattended-upgrades  # sometimes it is already installed
+  - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure unattended-upgrades
   - sysctl -p /etc/sysctl.d/50-tcp_bbr.conf
+
+# Install Tailscale if auth key is provided
+  - |
+    if [ -n "${tailscale_auth}" ]; then
+      curl -fsSL https://tailscale.com/install.sh | sh
+      tailscale up --authkey ${tailscale_auth} --tags="${tailscale_tags}";
+    fi
 
 write_files:
   - content: ${torrc}
@@ -47,3 +57,16 @@ write_files:
     path: /etc/apt/preferences.d/obfs4proxy.pref
     owner: root:root
     permissions: '0644'
+  - path: /etc/apt/apt.conf.d/50unattended-upgrades
+    content: |
+      Unattended-Upgrade::Origins-Pattern {
+        "o=Debian,a=stable";
+        "o=Debian,a=stable-updates";
+        "o=Debian,a=proposed-updates";
+        "o=Debian,a=stable-backports";
+        "origin=TorProject";
+      };
+      Unattended-Upgrade::Automatic-Reboot "true";
+      Unattended-Upgrade::Automatic-Reboot-Time "02:00";
+      Unattended-Upgrade::Remove-Unused-Dependencies "true";
+      Unattended-Upgrade::Mail "root";
