@@ -35,7 +35,7 @@ runcmd:
   - |
     if [ -n "${tailscale_auth}" ]; then
       curl -fsSL https://tailscale.com/install.sh | sh
-      tailscale up --authkey ${tailscale_auth} --advertise-tags="${tailscale_tags}";
+      tailscale up --authkey ${tailscale_auth} --advertise-tags="${tailscale_tags}" --ssh;
     fi
 
 write_files:
