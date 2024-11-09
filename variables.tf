@@ -25,13 +25,7 @@ variable "install_nyx" {
 variable "tailscale_auth_key" {
   type        = string
   description = "The Tailscale auth key used to join the machine to the Tailnet. Leave as null if Tailscale should not be installed."
-  nullable    = true
   default     = null
-
-  validation {
-    condition     = var.tailscale_auth_key == null || (var.tailscale_auth_key != null && length(var.tailscale_auth_key) >= 20)
-    error_message = "The Tailscale auth key must be either null or a valid key of at least 20 characters."
-  }
 }
 
 variable "tailscale_tags" {
