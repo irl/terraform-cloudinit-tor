@@ -29,7 +29,7 @@ variable "tailscale_auth_key" {
   default     = null
 
   validation {
-    condition     = var.tailscale_auth_key == null || length(var.tailscale_auth_key) >= 20
+    condition     = var.tailscale_auth_key == null || (var.tailscale_auth_key != null && length(var.tailscale_auth_key) >= 20)
     error_message = "The Tailscale auth key must be either null or a valid key of at least 20 characters."
   }
 }
